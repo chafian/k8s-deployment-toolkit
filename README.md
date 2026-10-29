@@ -1,5 +1,9 @@
 # k8s-deployment-toolkit
 
+[![CI](https://github.com/chafian/k8s-deployment-toolkit/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/chafian/k8s-deployment-toolkit/actions/workflows/ci.yaml)
+[![Release](https://img.shields.io/github/v/release/chafian/k8s-deployment-toolkit)](https://github.com/chafian/k8s-deployment-toolkit/releases/latest)
+[![License](https://img.shields.io/github/license/chafian/k8s-deployment-toolkit)](LICENSE)
+
 A reusable Helm 3 chart for deploying stateless HTTP applications, with runnable
 Nginx and Spring Boot examples, maintained by [chafian](https://github.com/chafian).
 
