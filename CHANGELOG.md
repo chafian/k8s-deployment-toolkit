@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — Unreleased
+## 0.1.0 — 2026-10-29
 
 - Add reusable Helm 3 chart for a non-root HTTP application.
 - Add schema validation, probes, resource bounds, TLS ingress, HPA, PDB and ServiceMonitor.
