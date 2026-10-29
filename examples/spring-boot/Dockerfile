@@ -4,7 +4,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn --batch-mode --no-transfer-progress verify
 
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:22-jre-jammy
 WORKDIR /app
 COPY --from=build --chown=10001:10001 /workspace/target/app.jar /app/app.jar
 USER 10001:10001
