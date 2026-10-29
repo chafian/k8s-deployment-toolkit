@@ -74,3 +74,6 @@ clean-code-guard: 2 fixed, 0 flagged for author in the final publication pass.
 The approved license is applied to the source and chart distribution. Documentation
 now describes public usage and private vulnerability reporting instead of a license
 proposal. docs-guard and test-guard checks were repeated for the changed material.
+
+The initial hosted chart job passed but reported deprecated Node 20 action runtimes.
+CI pins were updated to official Node 24 action releases before final hosted verification.
