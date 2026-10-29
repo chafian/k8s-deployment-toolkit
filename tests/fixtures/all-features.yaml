@@ -1,0 +1,32 @@
+fullnameOverride: integration-app
+image:
+  digest: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+serviceAccount:
+  create: false
+  name: existing-account
+env:
+  APP_MODE: test
+envFrom:
+  configMaps: [app-config]
+  secrets: [app-credentials]
+imagePullSecrets: [registry-credentials]
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /api
+          pathType: Prefix
+  tls:
+    - secretName: app-tls
+      hosts: [app.example.com]
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+pdb:
+  enabled: true
+serviceMonitor:
+  enabled: true
+  labels: {release: monitoring}

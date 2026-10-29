@@ -1,0 +1,12 @@
+# Only the demo application's exact root route is public; /actuator stays internal.
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: spring.example.com
+      paths:
+        - path: /
+          pathType: Exact
+  tls:
+    - secretName: spring-demo-tls
+      hosts: [spring.example.com]

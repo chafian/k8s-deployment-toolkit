@@ -1,0 +1,27 @@
+# Reference only: replace targetRevision with a reviewed immutable commit.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: toolkit-nginx-staging
+  namespace: argocd
+spec:
+  project: deployment-toolkit
+  source:
+    repoURL: https://github.com/chafian/k8s-deployment-toolkit.git
+    targetRevision: REPLACE_WITH_REVIEWED_COMMIT_SHA
+    path: charts/app
+    helm:
+      releaseName: toolkit-nginx-staging
+      valueFiles:
+        - ../../examples/nginx/values.yaml
+        - ../../environments/staging.yaml
+      valuesObject:
+        tests:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: toolkit-staging
+  # Deliberately manual sync. The namespace must already exist.
+  syncPolicy:
+    syncOptions:
+      - FailOnSharedResource=true

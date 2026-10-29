@@ -1,0 +1,6 @@
+# Requires the Prometheus Operator CRD and a Prometheus instance selecting this label.
+serviceMonitor:
+  enabled: true
+  labels:
+    release: monitoring
+  path: /actuator/prometheus

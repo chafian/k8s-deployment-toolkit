@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: deployment-toolkit
+  namespace: argocd
+spec:
+  description: Restricted scope for the deployment toolkit example
+  sourceRepos:
+    - https://github.com/chafian/k8s-deployment-toolkit.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: toolkit-staging
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: policy
+      kind: PodDisruptionBudget
+    - group: monitoring.coreos.com
+      kind: ServiceMonitor

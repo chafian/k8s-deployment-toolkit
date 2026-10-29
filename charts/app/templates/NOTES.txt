@@ -1,0 +1,11 @@
+Release {{ .Release.Name }} deployed in {{ .Release.Namespace }}.
+
+Check rollout:
+  kubectl -n {{ .Release.Namespace }} rollout status deployment/{{ include "app.fullname" . }}
+
+Access locally:
+  kubectl -n {{ .Release.Namespace }} port-forward service/{{ include "app.fullname" . }} 8080:{{ .Values.service.port }}
+
+{{ if .Values.tests.enabled }}Check HTTP connectivity:
+  helm test {{ .Release.Name }} -n {{ .Release.Namespace }} --logs
+{{ end }}

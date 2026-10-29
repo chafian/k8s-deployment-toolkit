@@ -1,0 +1,8 @@
+image:
+  repository: nginxinc/nginx-unprivileged
+  tag: "1.28.0-alpine"
+containerPort: 8080
+security:
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101

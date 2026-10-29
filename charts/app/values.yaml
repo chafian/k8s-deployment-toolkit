@@ -1,0 +1,86 @@
+# See README.md and values.schema.json for the supported contract.
+nameOverride: ""
+fullnameOverride: ""
+replicaCount: 2
+image:
+  repository: nginxinc/nginx-unprivileged
+  tag: "1.28.0-alpine"
+  # A sha256 digest takes precedence over tag. Pin one for production.
+  digest: ""
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+containerPort: 8080
+command: []
+args: []
+env: {}
+# Names of existing resources in the release namespace; no secret values here.
+envFrom:
+  configMaps: []
+  secrets: []
+service:
+  port: 80
+  annotations: {}
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+podAnnotations: {}
+security:
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 101
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 128Mi
+# The only writable path is /tmp, backed by size-limited ephemeral storage.
+tmpSizeLimit: 64Mi
+terminationGracePeriodSeconds: 30
+probes:
+  startup:
+    enabled: true
+    path: /
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 30
+  readiness:
+    enabled: true
+    path: /
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+  liveness:
+    enabled: true
+    path: /
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  tls: []
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+pdb:
+  enabled: false
+  maxUnavailable: 1
+serviceMonitor:
+  enabled: false
+  labels: {}
+  path: /metrics
+  interval: 30s
+  scrapeTimeout: 10s
+  # Fails early on install if the Prometheus Operator CRD is missing.
+  requireCRD: true
+tests:
+  enabled: true
+  image: busybox:1.37.0
+  path: /

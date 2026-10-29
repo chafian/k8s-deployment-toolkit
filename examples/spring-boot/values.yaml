@@ -1,0 +1,23 @@
+# Build locally; never a claim that this image exists in a public registry.
+image:
+  repository: toolkit-spring-demo
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+security:
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+resources:
+  requests: {cpu: 250m, memory: 384Mi}
+  limits: {cpu: "1", memory: 512Mi}
+probes:
+  startup:
+    path: /actuator/health/liveness
+    failureThreshold: 60
+  readiness:
+    path: /actuator/health/readiness
+  liveness:
+    path: /actuator/health/liveness
+# Keep management endpoints private when layering generic environment settings.
+ingress:
+  enabled: false

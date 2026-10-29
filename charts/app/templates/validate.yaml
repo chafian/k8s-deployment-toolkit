@@ -1,0 +1,9 @@
+{{- if not (regexMatch "^[a-z]([-a-z0-9]*[a-z0-9])?$" (include "app.fullname" .)) -}}
+{{- fail "The generated Service name must start with a letter; set fullnameOverride to a DNS label beginning with a-z" -}}
+{{- end -}}
+{{- if and .Values.autoscaling.enabled (gt (int .Values.autoscaling.minReplicas) (int .Values.autoscaling.maxReplicas)) -}}
+{{- fail "autoscaling.minReplicas must not exceed autoscaling.maxReplicas" -}}
+{{- end -}}
+{{- if and .Values.serviceMonitor.enabled .Values.serviceMonitor.requireCRD (not (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/ServiceMonitor")) -}}
+{{- fail "ServiceMonitor requires the Prometheus Operator CRD; for offline rendering pass --api-versions monitoring.coreos.com/v1/ServiceMonitor" -}}
+{{- end -}}
