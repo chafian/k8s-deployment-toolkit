@@ -6,6 +6,12 @@
 
 A reusable Helm 3 chart for deploying stateless HTTP applications, with runnable
 Nginx and Spring Boot examples, maintained by [chafian](https://github.com/chafian).
+Use it as a starting point for application deployments that share health probes,
+resource settings, non-root execution, and environment-specific configuration.
+
+[Preview the chart](#preview-without-a-cluster) · [Nginx quick start](#quick-start-nginx) ·
+[Spring Boot demo](examples/spring-boot/README.md) · [Configuration](docs/configuration.md) ·
+[Operations](docs/operations.md) · [Contributing](CONTRIBUTING.md)
 
 **Version:** 0.1.0. **License:** Apache-2.0.
 See [licensing](docs/licensing.md) and [local validation evidence](docs/validation.md).
@@ -28,6 +34,39 @@ not provision databases, persistent volumes, certificates, ingress controllers,
 metrics-server, Prometheus, or Argo CD. It grants no RBAC permissions. Network policy
 and workload-specific authentication remain deployment decisions.
 
+## Choose your starting point
+
+| Goal | Start here |
+| --- | --- |
+| Inspect the generated Kubernetes YAML without deploying | [Preview the chart](#preview-without-a-cluster) |
+| Try an HTTP application on an existing cluster | [Nginx quick start](#quick-start-nginx) |
+| Build a Java app and deploy it to a local kind cluster | [Spring Boot walkthrough](examples/spring-boot/README.md) |
+| Manage a reviewed deployment through Git | [Argo CD manual-sync example](gitops/argocd/README.md) |
+
+## Get the chart
+
+Commands below use a Bash shell on Linux/macOS or WSL. Install Git and Helm 3
+(the repository pins **3.19.0** for validation), then clone the repository:
+
+```bash
+git clone https://github.com/chafian/k8s-deployment-toolkit.git
+cd k8s-deployment-toolkit
+```
+
+Run the remaining commands from this repository root.
+
+## Preview without a cluster
+
+```bash
+helm lint charts/app --strict
+helm template demo charts/app --kube-version 1.34.0 \
+  --namespace toolkit-demo -f examples/nginx/values.yaml
+```
+
+The render prints Kubernetes YAML, including the `demo-app` Deployment and
+ClusterIP Service. It does not install resources or check live-cluster readiness.
+For schema and contract checks, see [Run the checks](#run-the-checks).
+
 ## Quick start: Nginx
 
 Prerequisites: Helm 3 (tested with **3.19.0**), `kubectl`, and a Kubernetes cluster.
@@ -35,12 +74,7 @@ Chart API range: **1.30–1.34**; schema validation covers both endpoints and li
 use **1.34.0**. This is an API compatibility range, not a recommendation to run an
 unsupported Kubernetes version. See [validation](docs/validation.md) for limits.
 
-Clone the repository, then run from its root with your intended cluster selected:
-
-```bash
-git clone https://github.com/chafian/k8s-deployment-toolkit.git
-cd k8s-deployment-toolkit
-```
+After cloning above, select your intended cluster and run:
 
 ```bash
 helm lint charts/app --strict
@@ -51,7 +85,9 @@ helm test demo --namespace toolkit-demo --logs
 kubectl -n toolkit-demo port-forward service/demo-app 8080:80
 ```
 
-Open `http://localhost:8080`. The default image is the upstream unprivileged Nginx
+A successful `helm test` reports the HTTP test as succeeded. Keep the port-forward
+running and open <http://localhost:8080> to see the Nginx welcome page. Stop the
+port-forward with Ctrl+C before cleanup. The default image is the upstream unprivileged Nginx
 image on port 8080. It runs as UID/GID 101 with `/tmp` as its writable directory.
 
 ```bash
@@ -62,6 +98,11 @@ kubectl -n toolkit-demo delete pod demo-app-test --ignore-not-found
 
 Uninstall removes chart resources; it does not delete the namespace or referenced
 Secrets/ConfigMaps.
+
+If installation or the HTTP check fails, use the [operations guide](docs/operations.md#common-failures)
+to inspect image pulls, probes, resource capacity, and permissions. The
+`--atomic` option rolls back a failed upgrade; a failed initial install can remove
+the release before you inspect its resources.
 
 ## Configure an application
 
@@ -129,7 +170,8 @@ only; never install that fixture.
 
 ## Run the checks
 
-Python 3.9+ is used for local checks (CI uses 3.12). Install test tools locally:
+Python 3.9+ is used for local checks (CI uses 3.12). These commands also require
+Bash and Make. Install test tools in the same Linux/macOS or WSL environment:
 
 ```bash
 python3 -m venv .venv
